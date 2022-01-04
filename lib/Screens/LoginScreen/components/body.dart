@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newone/Screens/Home/home.dart';
 import 'package:newone/constant/colors.dart';
+import 'package:newone/constant/style.dart';
 
 class Body extends StatefulWidget {
   const Body({Key? key}) : super(key: key);
@@ -25,7 +26,6 @@ class _BodyState extends State<Body> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: kScaffoldBgColor,
       body: SingleChildScrollView(
@@ -48,100 +48,16 @@ class _BodyState extends State<Body> {
                     const SizedBox(
                       height: 45,
                     ),
-                    TextFormField(
-                      keyboardType: TextInputType.name,
-                      controller: usernameController,
-                      decoration: InputDecoration(
-                          labelText: "Username",
-                          prefixIcon: const Icon(Icons.person),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          )),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "* Required";
-                        } else
-                          return null;
-                      },
-                    ),
+                    buildUserNameInputField(),
                     const SizedBox(
                       height: 15.0,
                     ),
-                    TextFormField(
-                      keyboardType: TextInputType.text,
-                      obscureText: isObscure,
-                      controller: passwordController,
-                      decoration: InputDecoration(
-                          labelText: "Password",
-                          prefixIcon: const Icon(Icons.lock),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              isObscure
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
-                              color: isObscure ? Colors.grey : Colors.black,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                isObscure = !isObscure;
-                              });
-                            },
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          )),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "* Required";
-                        } else if (value.length < 6) {
-                          return "Password should be atleast 6 characters";
-                        } else if (value.length > 15) {
-                          return "Password should not be greater than 15 characters";
-                        } else
-                          return null;
-                      },
-                    ),
-                    Container(
-                      height: size.height / 20,
-                      width: size.width,
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: () {},
-                        child: const Text(
-                          "Forgot Password?",
-                          style: TextStyle(color: Colors.black),
-                        ),
-                      ),
-                    ),
+                    buildPasswordInputField(),
+                    forgetPasswordButton(),
                     const SizedBox(
                       height: 35,
                     ),
-                    InkWell(
-                      hoverColor: Colors.white,
-                      onTap: () {
-                        if (formkey.currentState!.validate()) {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => Home()));
-                          SnackBar(content: Text("Validate"));
-                        } else {
-                          SnackBar(content: Text("Not validate"));
-                        }
-                      },
-                      child: Container(
-                        height: size.height / 16,
-                        width: size.width,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8.0),
-                          color: const Color(0xfffda0dd),
-                        ),
-                        child: const Center(
-                          child: Text(
-                            "Go",
-                            style: TextStyle(color: Colors.white, fontSize: 20),
-                          ),
-                        ),
-                      ),
-                    ),
+                    loginButton(),
                     TextButton(
                         onPressed: () {
                           print("hiii");
@@ -153,6 +69,101 @@ class _BodyState extends State<Body> {
                   ],
                 ),
               )),
+        ),
+      ),
+    );
+  }
+
+  Widget buildUserNameInputField() {
+    return TextFormField(
+      keyboardType: TextInputType.name,
+      controller: usernameController,
+      decoration: inputDecoration("Username", Icons.person),
+      validator: (value) {
+        if (value!.isEmpty) {
+          return "* Required";
+        } else
+          return null;
+      },
+    );
+  }
+
+  Widget buildPasswordInputField() {
+    return TextFormField(
+      keyboardType: TextInputType.text,
+      obscureText: isObscure,
+      controller: passwordController,
+      decoration: InputDecoration(
+          labelText: "Password",
+          prefixIcon: const Icon(Icons.lock),
+          suffixIcon: IconButton(
+            icon: Icon(
+              isObscure ? Icons.visibility_off : Icons.visibility,
+              color: isObscure ? Colors.grey : Colors.black,
+            ),
+            onPressed: () {
+              setState(() {
+                isObscure = !isObscure;
+              });
+            },
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          )),
+      validator: (value) {
+        if (value!.isEmpty) {
+          return "* Required";
+        } else if (value.length < 6) {
+          return "Password should be atleast 6 characters";
+        } else if (value.length > 15) {
+          return "Password should not be greater than 15 characters";
+        } else
+          return null;
+      },
+    );
+  }
+
+  Widget forgetPasswordButton() {
+    Size size = MediaQuery.of(context).size;
+    return Container(
+      height: size.height / 20,
+      width: size.width,
+      alignment: Alignment.centerRight,
+      child: TextButton(
+        onPressed: () {},
+        child: const Text(
+          "Forgot Password?",
+          style: TextStyle(color: Colors.black),
+        ),
+      ),
+    );
+  }
+
+  Widget loginButton() {
+    Size size = MediaQuery.of(context).size;
+    return InkWell(
+      hoverColor: Colors.white,
+      onTap: () {
+        if (formkey.currentState!.validate()) {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => Home()));
+          SnackBar(content: Text("Validate"));
+        } else {
+          SnackBar(content: Text("Not validate"));
+        }
+      },
+      child: Container(
+        height: size.height / 16,
+        width: size.width,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8.0),
+          color: const Color(0xfffda0dd),
+        ),
+        child: const Center(
+          child: Text(
+            "Go",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
         ),
       ),
     );
